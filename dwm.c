@@ -1624,7 +1624,7 @@ run(void)
 
 void
 runAutostart(void) {
-	system("killall -q dwmblocks; dwmblocks &");
+	system("[ -x $HOME/.local/share/dwm/autostart.sh ] && $HOME/.local/share/dwm/autostart.sh &");
 }
 
 void
