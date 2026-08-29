@@ -16,6 +16,8 @@ static int swallowfloating    = 0;        /* 1 means swallow floating windows by
 static int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 1;        /* 0 means bottom bar */
+static int vertpad            = 8;        /* vertical padding of bar */
+static int sidepad            = 8;        /* horizontal padding of bar */
 static char *fonts[]          = { "monospace:size=10", "NotoColorEmoji:pixelsize=10:antialias=true:autohint=true"  };
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
@@ -129,6 +131,8 @@ ResourcePref resources[] = {
 		{ "gappov",		INTEGER, &gappov },
 		{ "swallowfloating",	INTEGER, &swallowfloating },
 		{ "smartgaps",		INTEGER, &smartgaps },
+		{ "vertpad",		INTEGER, &vertpad },
+		{ "sidepad",		INTEGER, &sidepad },
 };
 
 #include <X11/XF86keysym.h>
