@@ -223,9 +223,9 @@ static const Key keys[] = {
 	{ MODKEY,			XK_m,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "ncmpcpp", NULL } } },
 	{ MODKEY|ShiftMask,		XK_m,          spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; kill -44 $(pidof dwmblocks)") },
 	{ MODKEY,			XK_comma,      spawn,                  {.v = (const char*[]){ "mpc", "prev", NULL } } },
-	{ MODKEY|ShiftMask,		XK_comma,      spawn,                  {.v = (const char*[]){ "mpc", "seek", "0%", NULL } } },
+	{ MODKEY|ShiftMask,		XK_comma,      cyclelayout,            {.i = -1 } },
 	{ MODKEY,			XK_period,     spawn,                  {.v = (const char*[]){ "mpc", "next", NULL } } },
-	{ MODKEY|ShiftMask,		XK_period,     spawn,                  {.v = (const char*[]){ "mpc", "repeat", NULL } } },
+	{ MODKEY|ShiftMask,		XK_period,     cyclelayout,            {.i = +1 } },
 
 	{ MODKEY,			XK_Left,       focusmon,               {.i = -1 } },
 	{ MODKEY|ShiftMask,		XK_Left,       tagmon,                 {.i = -1 } },

@@ -191,6 +191,7 @@ static void clientmessage(XEvent *e);
 static void configure(Client *c);
 static void configurenotify(XEvent *e);
 static void configurerequest(XEvent *e);
+static void cyclelayout(const Arg *arg);
 static void copyvalidchars(char *text, char *rawtext);
 static Monitor *createmon(void);
 static void destroynotify(XEvent *e);
@@ -1774,6 +1775,27 @@ stackpos(const Arg *arg) {
 	}
 	else
 		return arg->i;
+}
+
+void
+cyclelayout(const Arg *arg)
+{
+	Layout *l;
+	Arg a;
+
+	for (l = (Layout *)layouts; l != selmon->lt[selmon->sellt]; l++);
+	if (arg->i > 0) {
+		if (l->symbol && (l + 1)->symbol)
+			a = (Arg){.v = (l + 1)};
+		else
+			a = (Arg){.v = layouts};
+	} else {
+		if (l != layouts && (l - 1)->symbol)
+			a = (Arg){.v = (l - 1)};
+		else
+			a = (Arg){.v = &layouts[LENGTH(layouts) - 2]};
+	}
+	setlayout(&a);
 }
 
 void
