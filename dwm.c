@@ -76,7 +76,8 @@ enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
 enum { SchemeNorm, SchemeSel, SchemeUrg }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
-       NetWMWindowTypeDialog, NetClientList, NetClientInfo, NetLast }; /* EWMH atoms */
+       NetWMWindowTypeDialog, NetClientList, NetClientInfo,
+       NetNumberOfDesktops, NetDesktopNames, NetCurrentDesktop, NetWMDesktop, NetLast }; /* EWMH atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
@@ -271,6 +272,7 @@ static void updatebarpos(Monitor *m);
 static void updatebars(void);
 static void updateclientlist(void);
 static int updategeom(void);
+static void updatecurrentdesktop(void);
 static void updatenumlockmask(void);
 static void updatesizehints(Client *c);
 static void updatestatus(void);
@@ -672,6 +674,16 @@ clientmessage(XEvent *e)
 	XClientMessageEvent *cme = &e->xclient;
 	Client *c = wintoclient(cme->window);
 
+	/* _NET_CURRENT_DESKTOP targets the root window, not a client - lets
+	 * external pagers/bars like polybar's xworkspaces switch dwm tags by
+	 * clicking */
+	if (cme->message_type == netatom[NetCurrentDesktop]) {
+		Arg arg = { .ui = 1 << cme->data.l[0] };
+		if (cme->data.l[0] >= 0 && cme->data.l[0] < LENGTH(tags))
+			view(&arg);
+		return;
+	}
+
 	if (!c)
 		return;
 	if (cme->message_type == netatom[NetWMState]) {
@@ -877,6 +889,9 @@ drawbar(Monitor *m)
 	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0;
 	Client *c;
+
+	if (m == selmon)
+		updatecurrentdesktop();
 
 	if(!m->showbar)
 		return;
@@ -1887,6 +1902,10 @@ setup(void)
 	netatom[NetWMWindowTypeDialog] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
 	netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
 	netatom[NetClientInfo] = XInternAtom(dpy, "_NET_CLIENT_INFO", False);
+	netatom[NetNumberOfDesktops] = XInternAtom(dpy, "_NET_NUMBER_OF_DESKTOPS", False);
+	netatom[NetDesktopNames] = XInternAtom(dpy, "_NET_DESKTOP_NAMES", False);
+	netatom[NetCurrentDesktop] = XInternAtom(dpy, "_NET_CURRENT_DESKTOP", False);
+	netatom[NetWMDesktop] = XInternAtom(dpy, "_NET_WM_DESKTOP", False);
 	/* init cursors */
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
@@ -1911,6 +1930,26 @@ setup(void)
 		PropModeReplace, (unsigned char *) netatom, NetLast);
 	XDeleteProperty(dpy, root, netatom[NetClientList]);
 	XDeleteProperty(dpy, root, netatom[NetClientInfo]);
+	/* EWMH desktop (tag) reporting, for external bars/pagers like polybar */
+	{
+		long ndesktops = LENGTH(tags);
+		int i, len = 0;
+		char *names, *p;
+
+		XChangeProperty(dpy, root, netatom[NetNumberOfDesktops], XA_CARDINAL, 32,
+			PropModeReplace, (unsigned char *)&ndesktops, 1);
+		for (i = 0; i < LENGTH(tags); i++)
+			len += strlen(tags[i]) + 1;
+		p = names = ecalloc(1, len);
+		for (i = 0; i < LENGTH(tags); i++) {
+			strcpy(p, tags[i]);
+			p += strlen(tags[i]) + 1;
+		}
+		XChangeProperty(dpy, root, netatom[NetDesktopNames], utf8string, 8,
+			PropModeReplace, (unsigned char *)names, len);
+		free(names);
+	}
+	updatecurrentdesktop();
 	/* select events */
 	wa.cursor = cursor[CurNormal]->cursor;
 	wa.event_mask = SubstructureRedirectMask|SubstructureNotifyMask
@@ -2016,8 +2055,19 @@ void
 setclienttagprop(Client *c)
 {
 	long data[] = { (long) c->tags, (long) c->mon->num };
+	long desktop, mask = c->tags & ((1 << LENGTH(tags)) - 1);
+
 	XChangeProperty(dpy, c->win, netatom[NetClientInfo], XA_CARDINAL, 32,
 			PropModeReplace, (unsigned char *) data, 2);
+
+	/* _NET_WM_DESKTOP, so external pagers/bars like polybar's xworkspaces
+	 * can tell which tags are occupied; dwm tags are a bitmask, EWMH wants
+	 * one desktop per window, so report the lowest set tag */
+	for (desktop = 0; desktop < LENGTH(tags) - 1; desktop++)
+		if (mask & (1 << desktop))
+			break;
+	XChangeProperty(dpy, c->win, netatom[NetWMDesktop], XA_CARDINAL, 32,
+			PropModeReplace, (unsigned char *)&desktop, 1);
 }
 
 void
@@ -2202,6 +2252,18 @@ unmapnotify(XEvent *e)
 		else
 			unmanage(c, 0);
 	}
+}
+
+void
+updatecurrentdesktop(void)
+{
+	long i, tagmask = selmon->tagset[selmon->seltags] & ((1 << LENGTH(tags)) - 1);
+
+	for (i = 0; i < LENGTH(tags) - 1; i++)
+		if (tagmask & (1 << i))
+			break;
+	XChangeProperty(dpy, root, netatom[NetCurrentDesktop], XA_CARDINAL, 32,
+		PropModeReplace, (unsigned char *)&i, 1);
 }
 
 void
