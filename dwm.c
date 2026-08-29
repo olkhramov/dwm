@@ -73,7 +73,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeUrg }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetClientInfo, NetLast }; /* EWMH atoms */
@@ -1913,6 +1913,12 @@ seturgent(Client *c, int urg)
 	wmh->flags = urg ? (wmh->flags | XUrgencyHint) : (wmh->flags & ~XUrgencyHint);
 	XSetWMHints(dpy, c->win, wmh);
 	XFree(wmh);
+	if (c->isurgent)
+		XSetWindowBorder(dpy, c->win, scheme[SchemeUrg][ColBorder].pixel);
+	else if (c == selmon->sel)
+		XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
+	else
+		XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColBorder].pixel);
 }
 
 void
@@ -2114,7 +2120,7 @@ unfocus(Client *c, int setfocus)
 	if (!c)
 		return;
 	grabbuttons(c, 0);
-	XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColBorder].pixel);
+	XSetWindowBorder(dpy, c->win, scheme[c->isurgent ? SchemeUrg : SchemeNorm][ColBorder].pixel);
 	if (setfocus) {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
