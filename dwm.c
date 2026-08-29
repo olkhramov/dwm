@@ -1885,6 +1885,8 @@ setup(void)
 		die("no fonts could be loaded.");
 	lrpad = drw->fonts->h;
 	bh = drw->fonts->h + 2;
+	if (!showbar)
+		bh = POLYBARHEIGHT;
 	updategeom();
 	/* init atoms */
 	utf8string = XInternAtom(dpy, "UTF8_STRING", False);
@@ -2297,8 +2299,12 @@ updatebarpos(Monitor *m)
 		m->wh -= bh + vertpad;
 		m->by = m->topbar ? m->wy + vertpad : m->wy + m->wh;
 		m->wy = m->topbar ? m->wy + bh + vertpad : m->wy;
-	} else
+	} else {
+		m->wh -= bh;
 		m->by = -bh;
+		if (m->topbar)
+			m->wy += bh;
+	}
 }
 
 void
