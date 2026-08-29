@@ -266,6 +266,7 @@ static void toggleview(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
 static void unmanage(Client *c, int destroyed);
 static void unmapnotify(XEvent *e);
+static void warp(const Client *c);
 static void updatebarpos(Monitor *m);
 static void updatebars(void);
 static void updateclientlist(void);
@@ -987,6 +988,25 @@ focus(Client *c)
 	}
 	selmon->sel = c;
 	drawbars();
+	warp(c);
+}
+
+void
+warp(const Client *c)
+{
+	int x, y;
+
+	if (!c)
+		return;
+
+	if (!getrootptr(&x, &y) ||
+	    (x > c->x - c->bw &&
+	     y > c->y - c->bw &&
+	     x < c->x + c->w + c->bw * 2 &&
+	     y < c->y + c->h + c->bw * 2))
+		return;
+
+	XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w / 2, c->h / 2);
 }
 
 /* there are some broken focus acquiring clients needing extra handling */
