@@ -1833,6 +1833,21 @@ cyclelayout(const Arg *arg)
 	setlayout(&a);
 }
 
+/* layout-notify patch: dump current layout symbol for polybar */
+void
+writelayout(void)
+{
+	char path[256];
+	FILE *f;
+
+	snprintf(path, sizeof path, "%s/.local/state/dwm/layout", getenv("HOME"));
+	f = fopen(path, "w");
+	if (!f)
+		return;
+	fprintf(f, "%s\n", selmon->lt[selmon->sellt]->symbol);
+	fclose(f);
+}
+
 void
 setlayout(const Arg *arg)
 {
@@ -1841,6 +1856,7 @@ setlayout(const Arg *arg)
 	if (arg && arg->v)
 		selmon->lt[selmon->sellt] = (Layout *)arg->v;
 	strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, sizeof selmon->ltsymbol);
+	writelayout();
 	if (selmon->sel)
 		arrange(selmon);
 	else
