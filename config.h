@@ -176,6 +176,9 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_w,          spawn,                  SHCMD("wifimenu") },
 	{ MODKEY,			XK_e,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "emacs", "-nw", NULL } } },
 	{ MODKEY|ShiftMask,		XK_e,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "emacs", "-nw", NULL } } },
+	/* Super+e taken; use Super+Ctrl+e for the emacsclient frame (kept in sync with dwl) */
+	{ MODKEY|ControlMask,		XK_e,          spawn,                  SHCMD("emacsclient -c -a emacs") },
+	{ MODKEY|ControlMask|ShiftMask,	XK_e,          spawn,                  SHCMD("emacsclient -c -a emacs -e '(org-capture)'") },
 	{ MODKEY,			XK_r,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "lfub", NULL } } },
 	{ MODKEY|ShiftMask,		XK_r,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "htop", NULL } } },
 	{ MODKEY,			XK_t,          setlayout,              {.v = &layouts[0]} }, /* tile */
@@ -221,9 +224,9 @@ static const Key keys[] = {
 	{ MODKEY,			XK_z,          incrgaps,               {.i = +3 } },
 	/* { MODKEY|ShiftMask,		XK_z,          spawn,                  SHCMD("") }, */
 	{ MODKEY,			XK_x,          incrgaps,               {.i = -3 } },
-	/* { MODKEY|ShiftMask,		XK_x,          spawn,                  SHCMD("") }, */
+	{ MODKEY|ShiftMask,		XK_x,          spawn,                  SHCMD("lockscreen") },
 	{ MODKEY,			XK_c,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "profanity", NULL } } },
-	/* { MODKEY|ShiftMask,		XK_c,          spawn,                  SHCMD("") }, */
+	{ MODKEY|ShiftMask,		XK_c,          spawn,                  SHCMD("clipboard-menu") },
 	/* V is automatically bound above in STACKKEYS */
 	{ MODKEY,			XK_b,          togglebar,              {0} },
 	{ MODKEY|ShiftMask,		XK_b,          spawn,                  {.v = (const char*[]){ "toggle-polybar", NULL } } },
@@ -246,7 +249,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_Page_Down,  shifttag,               { .i = +1 } },
 	{ MODKEY,			XK_Insert,     spawn,                  SHCMD("xdotool type $(grep -v '^#' ~/.local/share/larbs/snippets | dmenu -i -l 50 | cut -d' ' -f1)") },
 
-	{ MODKEY,			XK_F1,         spawn,                  SHCMD("groff -mom /usr/local/share/dwm/larbs.mom -Tpdf | zathura -") },
+	{ MODKEY,			XK_F1,         spawn,                  SHCMD("groff -mom /home/entekka/.local/share/shortcuts-dwm.mom -T pdf | zathura -") },
 	{ MODKEY,			XK_F2,         spawn,                  {.v = (const char*[]){ "tutorialvids", NULL } } },
 	{ MODKEY,			XK_F3,         spawn,                  {.v = (const char*[]){ "displayselect", NULL } } },
 	{ MODKEY,			XK_F4,         spawn,                  SHCMD(TERMINAL " -e pulsemixer; kill -44 $(pidof dwmblocks)") },
@@ -261,8 +264,8 @@ static const Key keys[] = {
 	{ MODKEY,			XK_space,      zoom,                   {0} },
 	{ MODKEY|ShiftMask,		XK_space,      togglefloating,         {0} },
 
-	{ 0,				XK_Print,      spawn,                  {.v = (const char*[]){ "screenshot", "-f", NULL } } },
-	{ ShiftMask,			XK_Print,      spawn,                  {.v = (const char*[]){ "screenshot", "-s", NULL } } },
+	{ 0,				XK_Print,      spawn,                  {.v = (const char*[]){ "screenshot", NULL } } },
+	{ ShiftMask,			XK_Print,      spawn,                  {.v = (const char*[]){ "screenshot", "full", NULL } } },
 	{ MODKEY,			XK_Print,      spawn,		       {.v = (const char*[]){ "dmenurecord", NULL } } },
 	{ ControlMask,			XK_Print,      spawn,		       {.v = (const char*[]){ "freeze-crop", NULL } } },
 	{ MODKEY|ShiftMask,		XK_Print,      spawn,                  {.v = (const char*[]){ "dmenurecord", "kill", NULL } } },
