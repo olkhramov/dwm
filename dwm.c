@@ -675,7 +675,7 @@ clientmessage(XEvent *e)
 	Client *c = wintoclient(cme->window);
 
 	/* _NET_CURRENT_DESKTOP targets the root window, not a client - lets
-	 * external pagers/bars like polybar's xworkspaces switch dwm tags by
+	 * external pagers/bars like owlbar switch dwm tags by
 	 * clicking */
 	if (cme->message_type == netatom[NetCurrentDesktop]) {
 		Arg arg = { .ui = 1 << cme->data.l[0] };
@@ -1832,7 +1832,7 @@ cyclelayout(const Arg *arg)
 	setlayout(&a);
 }
 
-/* layout-notify patch: dump current layout symbol for polybar */
+/* layout-notify patch: dump current layout symbol for external bars */
 void
 writelayout(void)
 {
@@ -1901,7 +1901,7 @@ setup(void)
 	lrpad = drw->fonts->h;
 	bh = drw->fonts->h + 2;
 	if (!showbar)
-		bh = POLYBARHEIGHT;
+		bh = EXTBARHEIGHT;
 	updategeom();
 	/* init atoms */
 	utf8string = XInternAtom(dpy, "UTF8_STRING", False);
@@ -1947,7 +1947,7 @@ setup(void)
 		PropModeReplace, (unsigned char *) netatom, NetLast);
 	XDeleteProperty(dpy, root, netatom[NetClientList]);
 	XDeleteProperty(dpy, root, netatom[NetClientInfo]);
-	/* EWMH desktop (tag) reporting, for external bars/pagers like polybar */
+	/* EWMH desktop (tag) reporting, for external bars/pagers like owlbar */
 	{
 		long ndesktops = LENGTH(tags);
 		int i, len = 0;
@@ -2077,7 +2077,7 @@ setclienttagprop(Client *c)
 	XChangeProperty(dpy, c->win, netatom[NetClientInfo], XA_CARDINAL, 32,
 			PropModeReplace, (unsigned char *) data, 2);
 
-	/* _NET_WM_DESKTOP, so external pagers/bars like polybar's xworkspaces
+	/* _NET_WM_DESKTOP, so external pagers/bars like owlbar
 	 * can tell which tags are occupied; dwm tags are a bitmask, EWMH wants
 	 * one desktop per window, so report the lowest set tag */
 	for (desktop = 0; desktop < LENGTH(tags) - 1; desktop++)

@@ -4,7 +4,7 @@
 #define TERMINAL "ghostty"
 #define TERMCLASS "St"
 #define BROWSER "firefox"
-#define POLYBARHEIGHT 28
+#define EXTBARHEIGHT 28
 
 /* appearance */
 static unsigned int borderpx  = 2;        /* border pixel of windows */
@@ -15,7 +15,7 @@ static unsigned int gappoh    = 12;       /* horiz outer gap between windows and
 static unsigned int gappov    = 12;       /* vert outer gap between windows and screen edge */
 static int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
-static int showbar            = 0;        /* 0 means no bar - polybar handles tags/title now */
+static int showbar            = 0;        /* 0 means no bar - owlbar handles tags/title now */
 static int topbar             = 1;        /* 0 means bottom bar */
 static int vertpad            = 8;        /* vertical padding of bar */
 static int sidepad            = 8;        /* horizontal padding of bar */
@@ -229,7 +229,6 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_c,          spawn,                  SHCMD("clipboard-menu") },
 	/* V is automatically bound above in STACKKEYS */
 	{ MODKEY,			XK_b,          togglebar,              {0} },
-	{ MODKEY|ShiftMask,		XK_b,          spawn,                  {.v = (const char*[]){ "toggle-polybar", NULL } } },
 	{ MODKEY,			XK_n,          spawn,                  SHCMD("noticenter") },
 	{ MODKEY,			XK_m,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "ncmpcpp", NULL } } },
 	{ MODKEY|ShiftMask,		XK_m,          spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; kill -44 $(pidof dwmblocks)") },
