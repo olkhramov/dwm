@@ -246,7 +246,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_Page_Up,    shifttag,               { .i = -1 } },
 	{ MODKEY,			XK_Page_Down,  shiftview,              { .i = +1 } },
 	{ MODKEY|ShiftMask,		XK_Page_Down,  shifttag,               { .i = +1 } },
-	{ MODKEY,			XK_Insert,     spawn,                  SHCMD("xdotool type $(grep -v '^#' ~/.local/share/larbs/snippets | dmenu-styled -i -l 50 | cut -d' ' -f1)") },
+	{ MODKEY,			XK_Insert,     spawn,                  SHCMD("xdotool type $(grep -v '^#' ~/.local/share/karbs/snippets | dmenu-styled -i -l 50 | cut -d' ' -f1)") },
 
 	{ MODKEY,			XK_F1,         spawn,                  SHCMD("groff -mom /home/entekka/.local/share/shortcuts-dwm.mom -T pdf | zathura -") },
 	{ MODKEY,			XK_F2,         spawn,                  {.v = (const char*[]){ "tutorialvids", NULL } } },
