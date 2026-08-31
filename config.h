@@ -174,8 +174,8 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_q,          spawn,                  {.v = (const char*[]){ "sysact", NULL } } },
 	{ MODKEY,			XK_w,          spawn,                  {.v = (const char*[]){ BROWSER, NULL } } },
 	{ MODKEY|ShiftMask,		XK_w,          spawn,                  SHCMD("wifimenu") },
-	{ MODKEY,			XK_e,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "emacs", "-nw", NULL } } },
-	{ MODKEY|ShiftMask,		XK_e,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "emacs", "-nw", NULL } } },
+	{ MODKEY,			XK_e,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "doom-org", "-nw", NULL } } },
+	{ MODKEY|ShiftMask,		XK_e,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "doom-dev", "-nw", NULL } } },
 	/* Super+e taken; use Super+Ctrl+e for the emacsclient frame (kept in sync with dwl) */
 	{ MODKEY|ControlMask,		XK_e,          spawn,                  SHCMD("emacsclient -c -a emacs") },
 	{ MODKEY|ControlMask|ShiftMask,	XK_e,          spawn,                  SHCMD("emacsclient -c -a emacs -e '(org-capture)'") },
