@@ -253,6 +253,7 @@ static void sigdwmblocks(const Arg *arg);
 #endif
 static void sighup(int unused);
 static void sigterm(int unused);
+static void sigusr1(int unused);
 static void spawn(const Arg *arg);
 static int stackpos(const Arg *arg);
 static void tag(const Arg *arg);
@@ -327,6 +328,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 };
 static Atom wmatom[WMLast], netatom[NetLast];
 static int restart = 0;
+static volatile sig_atomic_t xrdbpending = 0;
 static int running = 1;
 static Cur *cursor[CurLast];
 static Clr **scheme;
@@ -1653,9 +1655,14 @@ run(void)
 	XEvent ev;
 	/* main event loop */
 	XSync(dpy, False);
-	while (running && !XNextEvent(dpy, &ev))
+	while (running && !XNextEvent(dpy, &ev)) {
+		if (xrdbpending) {
+			xrdbpending = 0;
+			xrdb(NULL);
+		}
 		if (handler[ev.type])
 			handler[ev.type](&ev); /* call handler */
+	}
 }
 
 void
@@ -1889,6 +1896,7 @@ setup(void)
 
 	signal(SIGHUP, sighup);
 	signal(SIGTERM, sigterm);
+	signal(SIGUSR1, sigusr1);
 
 	/* init screen */
 	screen = DefaultScreen(dpy);
@@ -2031,6 +2039,29 @@ sigterm(int unused)
 {
 	Arg a = {.i = 0};
 	quit(&a);
+}
+
+/* SIGUSR1: reload Xresources colors without restarting - same as the
+ * Super+F5 xrdb() keybind, but signal-triggered so a script (set-theme,
+ * after xrdb -merge'ing ~/.config/xresources/themes/<name>) can retheme
+ * every running program at once instead of requiring a keypress in
+ * each one.
+ *
+ * This handler only sets a flag - it must NOT call xrdb() directly.
+ * xrdb() does XOpenDisplay/XrmGetResource/drw_scm_create/focus/arrange,
+ * none of which are async-signal-safe, and this handler can interrupt
+ * run()'s main loop at any point, including mid-way through dwm's own
+ * use of the same `dpy` connection inside XNextEvent(). Calling more
+ * Xlib code reentrantly on that connection from here corrupts its
+ * internal state without necessarily crashing - confirmed live: after
+ * set-theme triggered this, dwm stayed running but stopped responding
+ * to any keybind at all (grabs still registered, event handling
+ * silently broken). run()'s loop checks xrdbpending and calls xrdb()
+ * from ordinary (non-signal) context instead - see run(). */
+void
+sigusr1(int unused)
+{
+	xrdbpending = 1;
 }
 
 #ifndef __OpenBSD__
