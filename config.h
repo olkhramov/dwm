@@ -203,7 +203,6 @@ static const Key keys[] = {
 	{ MODKEY,			XK_a,          togglegaps,             {0} },
 	{ MODKEY|ShiftMask,		XK_a,          defaultgaps,            {0} },
 	{ MODKEY,			XK_s,          togglesticky,           {0} },
-	/* { MODKEY|ShiftMask,		XK_s,          spawn,                  SHCMD("") }, */
 	{ MODKEY,			XK_d,          spawn,                  {.v = (const char*[]){ "dmenu-drun", NULL } } },
 	{ MODKEY|ShiftMask,		XK_d,          spawn,                  {.v = (const char*[]){ "passmenu", NULL } } },
 	{ MODKEY,			XK_f,          togglefullscr,          {0} },
@@ -211,7 +210,8 @@ static const Key keys[] = {
 	{ MODKEY,			XK_g,          shiftview,              { .i = -1 } },
 	{ MODKEY|ShiftMask,		XK_g,          shifttag,               { .i = -1 } },
 	{ MODKEY,			XK_h,          setmfact,               {.f = -0.05} },
-	/* J and K are automatically bound above in STACKEYS */
+	{ MODKEY|ShiftMask,		XK_h,          togglefloating,         {0} },
+	/* J and K (both plain and Shift) are automatically bound above in STACKEYS */
 	{ MODKEY,			XK_l,          setmfact,               {.f = +0.05} },
 	{ MODKEY,			XK_semicolon,  shiftview,              { .i = 1 } },
 	{ MODKEY|ShiftMask,		XK_semicolon,  shifttag,               { .i = 1 } },
@@ -222,12 +222,12 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_Return,     togglescratch,          {.ui = 0} },
 
 	{ MODKEY,			XK_z,          incrgaps,               {.i = +3 } },
-	/* { MODKEY|ShiftMask,		XK_z,          spawn,                  SHCMD("") }, */
+	{ MODKEY|ShiftMask,		XK_z,          zoom,                   {0} },
 	{ MODKEY,			XK_x,          incrgaps,               {.i = -3 } },
 	{ MODKEY|ShiftMask,		XK_x,          spawn,                  SHCMD("lockscreen") },
 	{ MODKEY,			XK_c,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "profanity", NULL } } },
 	{ MODKEY|ShiftMask,		XK_c,          spawn,                  SHCMD("clipboard-menu") },
-	/* V is automatically bound above in STACKKEYS */
+	/* both plain and Shift V are already bound above in STACKKEYS */
 	{ MODKEY,			XK_b,          togglebar,              {0} },
 	{ MODKEY,			XK_n,          spawn,                  SHCMD("noticenter") },
 	{ MODKEY|ShiftMask,		XK_n,          spawn,                  {.v = (const char*[]){ "notif-dnd", NULL } } },
@@ -262,8 +262,6 @@ static const Key keys[] = {
 	{ MODKEY,			XK_F10,        spawn,                  {.v = (const char*[]){ "unmounter", NULL } } },
 	{ MODKEY,			XK_F11,        spawn,                  SHCMD("mpv --untimed --no-cache --no-osc --no-input-default-bindings --profile=low-latency --input-conf=/dev/null --title=webcam $(ls /dev/video[0,2,4,6,8] | tail -n 1)") },
 	{ MODKEY,			XK_F12,        spawn,                  SHCMD("remaps") },
-	{ MODKEY,			XK_space,      zoom,                   {0} },
-	{ MODKEY|ShiftMask,		XK_space,      togglefloating,         {0} },
 
 	{ 0,				XK_Print,      spawn,                  {.v = (const char*[]){ "screenshot", NULL } } },
 	{ ShiftMask,			XK_Print,      spawn,                  {.v = (const char*[]){ "screenshot", "full", NULL } } },
