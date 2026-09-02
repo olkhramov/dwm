@@ -146,7 +146,8 @@ static const Key keys[] = {
 	/* modifier                     key            function                argument */
 	STACKKEYS(MODKEY,                              focus)
 	STACKKEYS(MODKEY|ShiftMask,                    push)
-	/* { MODKEY|ShiftMask,		XK_Escape,     spawn,	               SHCMD("") }, */
+	{ MODKEY,			XK_Escape,     spawn,	               SHCMD("noticenter") },
+	{ MODKEY|ShiftMask,		XK_Escape,     spawn,	               {.v = (const char*[]){ "notif-dnd", NULL } } },
 	{ MODKEY,			XK_grave,      spawn,	               {.v = (const char*[]){ "emoji", NULL } } },
 	/* { MODKEY|ShiftMask,		XK_grave,      togglescratch,	       SHCMD("") }, */
 	TAGKEYS(			XK_1,          0)
@@ -204,7 +205,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_a,          defaultgaps,            {0} },
 	{ MODKEY,			XK_s,          togglesticky,           {0} },
 	{ MODKEY,			XK_d,          spawn,                  {.v = (const char*[]){ "dmenu-drun", NULL } } },
-	{ MODKEY|ShiftMask,		XK_d,          spawn,                  {.v = (const char*[]){ "passmenu", NULL } } },
+	{ MODKEY|ShiftMask,		XK_d,          spawn,                  {.v = (const char*[]){ "dmenu-run-styled", NULL } } },
 	{ MODKEY,			XK_f,          togglefullscr,          {0} },
 	{ MODKEY|ShiftMask,		XK_f,          setlayout,              {.v = &layouts[8]} },
 	{ MODKEY,			XK_g,          shiftview,              { .i = -1 } },
@@ -229,8 +230,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_c,          spawn,                  SHCMD("clipboard-menu") },
 	/* both plain and Shift V are already bound above in STACKKEYS */
 	{ MODKEY,			XK_b,          togglebar,              {0} },
-	{ MODKEY,			XK_n,          spawn,                  SHCMD("noticenter") },
-	{ MODKEY|ShiftMask,		XK_n,          spawn,                  {.v = (const char*[]){ "notif-dnd", NULL } } },
+	{ MODKEY,			XK_n,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "newsboat", NULL } } },
 	{ MODKEY,			XK_m,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "ncmpcpp", NULL } } },
 	{ MODKEY|ShiftMask,		XK_m,          spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; kill -44 $(pidof dwmblocks)") },
 	{ MODKEY,			XK_comma,      spawn,                  {.v = (const char*[]){ "mpc", "prev", NULL } } },
