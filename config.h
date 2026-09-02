@@ -168,7 +168,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_BackSpace,  spawn,                  {.v = (const char*[]){ "powermenu", NULL } } },
 
 	{ MODKEY,			XK_Tab,        view,                   {0} },
-	/* { MODKEY|ShiftMask,		XK_Tab,	       spawn,                  SHCMD("") }, */
+	{ MODKEY|ShiftMask,		XK_Tab,        spawn,                  {.v = (const char*[]){ "palette", NULL } } },
 	{ MODKEY,			XK_q,          killclient,             {0} },
 	{ MODKEY|ControlMask|ShiftMask,	XK_q,          quit,                   {.i = 1 } },
 	{ MODKEY|ShiftMask,		XK_q,          spawn,                  {.v = (const char*[]){ "sysact", NULL } } },
