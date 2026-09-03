@@ -77,8 +77,11 @@ enum { SchemeNorm, SchemeSel, SchemeUrg }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetClientInfo,
-       NetNumberOfDesktops, NetDesktopNames, NetCurrentDesktop, NetWMDesktop, NetLast }; /* EWMH atoms */
+       NetNumberOfDesktops, NetDesktopNames, NetCurrentDesktop, NetWMDesktop,
+       NetDwmBarCommand, NetDwmLayout, NetLast }; /* EWMH atoms + dwm bar extension */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
+enum { BarFocusNext = 1, BarFocusPrev, BarToggleFloating, BarLayoutNext,
+       BarMfactInc, BarMfactDec, BarNmasterInc, BarNmasterDec };
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
@@ -683,6 +686,23 @@ clientmessage(XEvent *e)
 		Arg arg = { .ui = 1 << cme->data.l[0] };
 		if (cme->data.l[0] >= 0 && cme->data.l[0] < LENGTH(tags))
 			view(&arg);
+		return;
+	}
+	/* X11 has standard messages for desktop selection/fullscreen but not for
+	 * dwm's own focus, floating, and tiling operations. Keep those few bar
+	 * requests in one root-window ClientMessage extension; the bar never
+	 * reaches into dwm's client list itself. */
+	if (cme->message_type == netatom[NetDwmBarCommand]) {
+		switch (cme->data.l[0]) {
+		case BarFocusNext: focusstack(&(Arg){.i = +1}); break;
+		case BarFocusPrev: focusstack(&(Arg){.i = -1}); break;
+		case BarToggleFloating: togglefloating(NULL); break;
+		case BarLayoutNext: cyclelayout(&(Arg){.i = +1}); break;
+		case BarMfactInc: setmfact(&(Arg){.f = +0.05f}); break;
+		case BarMfactDec: setmfact(&(Arg){.f = -0.05f}); break;
+		case BarNmasterInc: incnmaster(&(Arg){.i = +1}); break;
+		case BarNmasterDec: incnmaster(&(Arg){.i = -1}); break;
+		}
 		return;
 	}
 
@@ -1862,6 +1882,8 @@ setlayout(const Arg *arg)
 	if (arg && arg->v)
 		selmon->lt[selmon->sellt] = (Layout *)arg->v;
 	strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, sizeof selmon->ltsymbol);
+	XChangeProperty(dpy, root, netatom[NetDwmLayout], XA_STRING, 8,
+		PropModeReplace, (unsigned char *)selmon->ltsymbol, strlen(selmon->ltsymbol));
 	writelayout();
 	if (selmon->sel)
 		arrange(selmon);
@@ -1931,6 +1953,10 @@ setup(void)
 	netatom[NetDesktopNames] = XInternAtom(dpy, "_NET_DESKTOP_NAMES", False);
 	netatom[NetCurrentDesktop] = XInternAtom(dpy, "_NET_CURRENT_DESKTOP", False);
 	netatom[NetWMDesktop] = XInternAtom(dpy, "_NET_WM_DESKTOP", False);
+	netatom[NetDwmBarCommand] = XInternAtom(dpy, "_DWM_BAR_COMMAND", False);
+	netatom[NetDwmLayout] = XInternAtom(dpy, "_DWM_LAYOUT", False);
+	XChangeProperty(dpy, root, netatom[NetDwmLayout], XA_STRING, 8,
+		PropModeReplace, (unsigned char *)selmon->ltsymbol, strlen(selmon->ltsymbol));
 	/* init cursors */
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
