@@ -230,6 +230,7 @@ static const Key keys[] = {
 	/* both plain and Shift V are already bound above in STACKKEYS */
 	{ MODKEY,			XK_b,          togglebar,              {0} },
 	{ MODKEY,			XK_n,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "newsboat", NULL } } },
+	{ MODKEY|ShiftMask,		XK_n,          spawn,                  {.v = (const char*[]){ "quote-capture", NULL } } },
 	{ MODKEY,			XK_m,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "ncmpcpp", NULL } } },
 	{ MODKEY|ShiftMask,		XK_m,          spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; kill -44 $(pidof dwmblocks)") },
 	{ MODKEY,			XK_comma,      spawn,                  {.v = (const char*[]){ "mpc", "prev", NULL } } },
@@ -343,4 +344,3 @@ static const Button buttons[] = {
 	{ ClkTagBar,		0,		     Button5,	     shiftview,      {.i = 1} },
 	{ ClkRootWin,		0,		     Button2,	     togglebar,      {0} },
 };
-
