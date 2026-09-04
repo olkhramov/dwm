@@ -169,7 +169,8 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_BackSpace,  spawn,                  {.v = (const char*[]){ "powermenu", NULL } } },
 
 	{ MODKEY,			XK_Tab,        view,                   {0} },
-	{ MODKEY|ShiftMask,		XK_Tab,        spawn,                  {.v = (const char*[]){ "palette", NULL } } },
+	/* Shift+Tab resolves to ISO_Left_Tab, not XK_Tab, on X11. */
+	{ MODKEY|ShiftMask,		XK_ISO_Left_Tab, spawn,                {.v = (const char*[]){ "palette", NULL } } },
 	{ MODKEY,			XK_q,          killclient,             {0} },
 	{ MODKEY|ControlMask|ShiftMask,	XK_q,          quit,                   {.i = 1 } },
 	{ MODKEY|ShiftMask,		XK_q,          spawn,                  {.v = (const char*[]){ "sysact", NULL } } },
