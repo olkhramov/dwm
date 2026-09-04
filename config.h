@@ -251,6 +251,7 @@ static const Key keys[] = {
 	{ MODKEY,			XK_Insert,     spawn,                  SHCMD("xdotool type $(grep -v '^#' ~/.local/share/karbs/snippets | dmenu-styled -i -l 50 | cut -d' ' -f1)") },
 
 	{ MODKEY,			XK_F1,         spawn,                  SHCMD("groff -mom /home/entekka/.local/share/shortcuts-dwm.mom -T pdf | zathura -") },
+	{ MODKEY|ControlMask,		XK_F1,         spawn,                  {.v = (const char*[]){ "emacs-cheatsheet", NULL } } },
 	{ MODKEY|ShiftMask,		XK_F1,         spawn,                  {.v = (const char*[]){ "lima-readme", NULL } } },
 	{ MODKEY,			XK_F2,         spawn,                  {.v = (const char*[]){ "tutorialvids", NULL } } },
 	{ MODKEY,			XK_F3,         spawn,                  {.v = (const char*[]){ "displayselect", NULL } } },
