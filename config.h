@@ -227,6 +227,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_x,          spawn,                  SHCMD("lockscreen") },
 	{ MODKEY,			XK_c,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "profanity", NULL } } },
 	{ MODKEY|ShiftMask,		XK_c,          spawn,                  SHCMD("clipboard-menu") },
+	{ MODKEY|ShiftMask,		XK_space,      spawn,                  {.v = (const char*[]){ "ctxmenu", "selection", NULL } } },
 	/* both plain and Shift V are already bound above in STACKKEYS */
 	{ MODKEY,			XK_b,          togglebar,              {0} },
 	{ MODKEY,			XK_n,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "newsboat", NULL } } },
