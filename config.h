@@ -336,6 +336,8 @@ static const Button buttons[] = {
 	{ ClkStatusText,        ShiftMask,           Button3,        spawn,          SHCMD(TERMINAL " -e nvim ~/.local/src/dwmblocks/config.h") },
 	{ ClkClientWin,         MODKEY,              Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,              Button2,        defaultgaps,    {0} },
+	/* A click-only counterpart to Super+Shift+Space: act on primary selection. */
+	{ ClkClientWin,         MODKEY|ShiftMask,    Button3,        spawn,          {.v = (const char*[]){ "ctxmenu", "selection", NULL } } },
 	{ ClkClientWin,         MODKEY,              Button3,        resizemouse,    {0} },
 	{ ClkClientWin,		MODKEY,		     Button4,	     incrgaps,       {.i = +1} },
 	{ ClkClientWin,		MODKEY,		     Button5,	     incrgaps,       {.i = -1} },
