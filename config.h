@@ -176,7 +176,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_q,          spawn,                  {.v = (const char*[]){ "sysact", NULL } } },
 	{ MODKEY,			XK_w,          spawn,                  {.v = (const char*[]){ BROWSER, NULL } } },
 	{ MODKEY|ShiftMask,		XK_w,          spawn,                  SHCMD("wifimenu") },
-	{ MODKEY,			XK_e,          spawn,                  {.v = (const char*[]){ "emacs-open", NULL } } },
+	{ MODKEY,			XK_e,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "emacs-open", "--tty", NULL } } },
 	{ MODKEY|ShiftMask,		XK_e,          spawn,                  {.v = (const char*[]){ "org", NULL } } },
 	{ MODKEY|ControlMask,		XK_e,          spawn,                  {.v = (const char*[]){ "org", "agenda", NULL } } },
 	{ MODKEY|ControlMask|ShiftMask,	XK_e,          spawn,                  {.v = (const char*[]){ "org", "capture", NULL } } },
